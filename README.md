@@ -130,7 +130,7 @@ If you’re a student contributing code or notes:
 
 For queries, reach out at:
 
-📧 **[waqarahmed7861234@gmail.com](mailto:waqarahmed7861234@gmail.com)**
+📧 **Email:** [waqarahmed7861234@gmail.com](mailto:waqarahmed7861234@gmail.com)
 
 💼 **GitHub:** [https://github.com/Maksof-waqarahmed](https://github.com/Maksof-waqarahmed)
 
