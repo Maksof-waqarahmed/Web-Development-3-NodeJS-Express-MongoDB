@@ -791,6 +791,75 @@ app.listen(PORT, () => {
 
 ---
 
+## 🧭 Understanding Express.js Core Concepts
+
+---
+
+### 1️⃣ Routing in Express
+
+Routing defines how your app responds to client requests at specific URLs.
+
+**Syntax:**
+
+```ts
+app.METHOD(PATH, HANDLER)
+```
+
+| Term      | Meaning                                      |
+| --------- | -------------------------------------------- |
+| `METHOD`  | HTTP method (`get`, `post`, `put`, `delete`) |
+| `PATH`    | URL endpoint (`"/users"`, `"/books/:id"`)    |
+| `HANDLER` | Function handling request & response         |
+
+---
+
+### 🔹 Example: Basic Routes
+
+```ts
+app.get("/users", (req: Request, res: Response) => {
+  res.json([{ id: 1, name: "Rana" }]);
+});
+
+app.post("/users", (req: Request, res: Response) => {
+  const newUser = req.body;
+  res.status(201).json({ message: "User created", user: newUser });
+});
+```
+
+---
+
+### 🔸 Dynamic Routes with Parameters
+
+Use `req.params` to handle dynamic IDs.
+
+```ts
+app.get("/users/:id", (req: Request, res: Response) => {
+  const id = req.params.id;
+  res.json({ message: `Fetching user with ID: ${id}` });
+});
+```
+
+---
+
+### ⚙️ Sending Responses
+
+Express provides multiple methods to send responses:
+
+| Method             | Description            |
+| ------------------ | ---------------------- |
+| `res.send()`       | Sends text/HTML        |
+| `res.json()`       | Sends JSON             |
+| `res.status()`     | Sets HTTP status code  |
+| `res.sendStatus()` | Sends only status code |
+
+**Example:**
+
+```ts
+res.status(200).json({ message: "Success" });
+```
+
+---
+
 # 7) Hands-on CRUD with static (in-memory) data
 
 We’ll create a small `books` resource stored in memory (array). This demonstrates typical REST CRUD (Create / Read / Update / Delete).

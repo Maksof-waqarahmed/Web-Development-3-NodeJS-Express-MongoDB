@@ -19,36 +19,7 @@ In this guide, you’ll learn:
 
 ---
 
-## 🧠 What is Express.js?
 
-**Express.js** is a **minimal and flexible Node.js framework** that simplifies the process of building web servers and APIs.
-
-Without Express, you’d have to manually:
-
-* Parse incoming requests
-* Handle routes
-* Set headers
-* Manage errors
-
-Express automates all of this for you.
-
----
-
-### 🧩 Why We Need Express
-
-Let’s compare **raw Node.js HTTP** vs **Express**:
-
-| Feature              | Raw Node.js                                | Express.js                         |
-| -------------------- | ------------------------------------------ | ---------------------------------- |
-| Routing              | Manual route checking using `if (req.url)` | Built-in `app.get()`, `app.post()` |
-| Request body parsing | Manual JSON parsing                        | `express.json()` middleware        |
-| Readability          | Complex & long                             | Simple & structured                |
-| Middleware support   | Manual handling                            | Built-in support                   |
-| Scalability          | Hard to scale                              | Easy modular structure             |
-
-✅ **In short:** Express.js saves time, organizes your code, and makes backend development beginner-friendly.
-
----
 
 ## ⚙️ Setting Up Express with TypeScript
 
@@ -123,67 +94,7 @@ npx ts-node-dev src/server.ts
 
 ---
 
-## 🧭 Understanding Express.js Core Concepts
 
----
-
-## 1️⃣ Routing in Express
-
-Routing defines how your app responds to client requests at specific URLs.
-
-### ✳️ Syntax
-
-```ts
-app.METHOD(PATH, HANDLER)
-```
-
-Where:
-
-* `METHOD` → HTTP method (`get`, `post`, `put`, `delete`)
-* `PATH` → URL endpoint (`"/users"`, `"/products/:id"`)
-* `HANDLER` → Function that handles the request
-
----
-
-### 🔹 Example: Basic Routes
-
-```ts
-app.get("/users", (req: Request, res: Response) => {
-  res.json([{ id: 1, name: "Rana" }]);
-});
-
-app.post("/users", (req: Request, res: Response) => {
-  const newUser = req.body;
-  res.status(201).json({ message: "User created", user: newUser });
-});
-
-app.put("/users/:id", (req: Request, res: Response) => {
-  const id = req.params.id;
-  res.json({ message: `User ${id} updated` });
-});
-
-app.delete("/users/:id", (req: Request, res: Response) => {
-  const id = req.params.id;
-  res.json({ message: `User ${id} deleted` });
-});
-```
-
----
-
-### 🔸 Dynamic Routes with Parameters
-
-Use `req.params` for dynamic values.
-
-Example:
-
-```ts
-app.get("/users/:id", (req: Request, res: Response) => {
-  const id = req.params.id;
-  res.json({ message: `Fetching user with ID: ${id}` });
-});
-```
-
----
 
 ### 🔸 Query Parameters
 
@@ -323,24 +234,7 @@ app.get("/filter", (req: Request, res: Response) => {
 
 ---
 
-## ⚙️ Sending Responses
 
-Express provides multiple ways to send a response:
-
-| Method                 | Description            |
-| ---------------------- | ---------------------- |
-| `res.send()`           | Sends text or HTML     |
-| `res.json()`           | Sends JSON response    |
-| `res.status(code)`     | Sets HTTP status code  |
-| `res.sendStatus(code)` | Sends only status code |
-
-**Example:**
-
-```ts
-res.status(200).json({ message: "Success" });
-```
-
----
 
 ## 🧾 Common HTTP Status Codes
 
