@@ -132,8 +132,8 @@ For queries, reach out at:
 
 📧 **[waqarahmed7861234@gmail.com](mailto:waqarahmed7861234@gmail.com)**
 
-💼 **GitHub:** [[https://github.com/Maksof-waqarahmed](https://github.com/Maksof-waqarahmed)]
+💼 **GitHub:** [https://github.com/Maksof-waqarahmed](https://github.com/Maksof-waqarahmed)
 
-🌐 **LinkedIn:** [[https://www.linkedin.com/in/waqarranadev/](https://www.linkedin.com/in/waqarranadev/)]
+🌐 **LinkedIn:** [https://www.linkedin.com/in/waqarranadev/](https://www.linkedin.com/in/waqarranadev/)
 
 ---
