@@ -601,3 +601,451 @@ PATCH /books/1
 * **TypeScript** helps enforce type safety when handling requests and responses.
 
 ---
+
+# 1) What is Express.js?
+
+**Express.js** is a **minimal, flexible** web framework for Node.js that simplifies building web servers and APIs.
+It provides a thin layer of features — routing, middleware, request/response helpers — so you don't have to implement low-level HTTP handling manually.
+
+**Key idea:** Express gives you a structured, readable API to create endpoints while staying unopinionated (you choose how to structure the app).
+
+---
+
+# 2) Why do we need Express?
+
+Without a framework, creating a web server requires manual handling of many common tasks:
+
+* Parsing request bodies (JSON, form data)
+* Routing (matching URLs and HTTP methods)
+* Handling headers and status codes consistently
+* Middleware chains (authentication, logging, body parsing)
+* Error handling, central logging, and static file serving
+
+**Express solves these** by offering:
+
+* `app.get()`, `app.post()` etc. for routing
+* `express.json()` and `express.urlencoded()` for parsing the body
+* Middleware system (`app.use()`) for reusable logic
+* Clear separation of concerns (routes, middleware, controllers)
+* Easy integration with community middleware (CORS, helmet, helmet for security, morgan for logging, etc.)
+
+---
+
+# 3) Node.js vs Express.js — quick comparison
+
+|      Feature | Raw Node.js (http module)             | Express.js                                |
+| -----------: | ------------------------------------- | ----------------------------------------- |
+|      Routing | Manual `if (req.url ...)`             | `app.get`, `app.post`, routers            |
+| Parsing body | Manual `req.on('data')` & parse       | `express.json()` / `express.urlencoded()` |
+|   Middleware | Ad-hoc implementation needed          | Built-in middleware pipeline (`next()`)   |
+|  Readability | Verbose & low-level                   | Cleaner, declarative                      |
+|    Ecosystem | You write more code                   | Rich middleware ecosystem                 |
+|     Use case | Very small scripts / custom protocols | Most web APIs and apps                    |
+
+---
+
+# 4) Who made Express & when?
+
+* **Created by:** TJ Holowaychuk
+* **First release:** around **2010**.
+* Over time it became the de-facto standard web framework for Node.js and is now maintained by the Express.js core team and the community.
+
+---
+
+# 5) Other popular Node.js frameworks
+
+* **Fastify** — high performance, schema-based validation.
+* **Koa** — by the creators of Express, minimal and modern (uses async/await middleware).
+* **NestJS** — full-featured, opinionated framework built with TypeScript (good for large apps).
+* **Hapi** — configuration-first framework.
+* **Sails.js** — MVC-style, useful for data-driven apps.
+
+---
+
+# 6) Basic Express + TypeScript server
+
+We’ll build a simple server, then extend it with a small in-memory CRUD for `books`.
+
+### Prerequisites
+
+* Node.js installed (v14+ recommended)
+* Basic familiarity with npm and TypeScript
+
+---
+
+## 6.1 Install & initialize
+
+```bash
+mkdir express-ts-server
+cd express-ts-server
+npm init -y
+```
+
+Install packages:
+
+```bash
+# production dependency
+npm install express
+
+# dev dependencies (TypeScript and types)
+npm install -D typescript tsx @types/node @types/express nodemon
+```
+
+* `express` — framework
+* `typescript` — compiler
+* `tsx` — run TS files directly (fast)
+* `@types/*` — TypeScript definitions for Node and Express
+* `nodemon` — restarts server in dev when files change
+
+---
+
+## 6.2 tsconfig.json
+
+Create `tsconfig.json` (you can run `npx tsc --init` then edit). Example minimal:
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "rootDir": "src",
+    "outDir": "dist",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  },
+  "include": ["src"]
+}
+```
+
+**Key fields:**
+
+* `target`: language version of emitted JS
+* `module`: `CommonJS` for Node.js
+* `rootDir` / `outDir`: source and compiled dirs
+* `strict`: enables strict typing
+* `esModuleInterop`: compatibility with `import express from "express"`
+
+---
+
+## 6.3 package.json scripts
+
+Edit `package.json` scripts:
+
+```json
+"scripts": {
+  "dev": "npx tsx src/server.ts",
+  "start": "node dist/server.js",
+  "build": "tsc"
+}
+```
+
+* `npm run dev` — development server with auto restart (uses tsx to run TypeScript without compiling to dist)
+* `npm run build` — compile to `dist/`
+* `npm start` — run compiled JS in production
+
+---
+
+## 6.4 Create the basic server: `src/server.ts`
+
+Create `src/server.ts` with detailed comments:
+
+```ts
+import express, { Request, Response, NextFunction } from "express";
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middleware: parse incoming JSON bodies
+app.use(express.json());
+
+// Basic GET route (home)
+app.get("/", (req: Request, res: Response) => {
+  // res.status(200) is default for successful responses from GET
+  res.status(200).send("🚀 Welcome to Express + TypeScript Server");
+});
+
+// Start the server
+app.listen(PORT, () => {
+  console.log(`✅ Server running at http://localhost:${PORT}`);
+});
+```
+
+### Explanation (line by line)
+
+* `import express, { Request, Response, NextFunction } from "express";`
+  Imports Express and TypeScript types for request/response.
+
+* `const app = express();`
+  Creates an Express application instance. This `app` will register routes and middleware.
+
+* `app.use(express.json());`
+  Built-in middleware to parse `application/json` request bodies and populate `req.body`. Without this, `req.body` is `undefined` for JSON POSTs.
+
+* `app.get("/", (req, res) => { ... });`
+  Defines a GET endpoint at `/`. `req` and `res` are typed. `res.send()` sets appropriate headers and sends the content.
+
+* `app.listen(PORT, ...)`
+  Starts listening on the given port. In development you’ll see the console message.
+
+---
+
+# 7) Hands-on CRUD with static (in-memory) data
+
+We’ll create a small `books` resource stored in memory (array). This demonstrates typical REST CRUD (Create / Read / Update / Delete).
+
+Create `src/routes/books.ts` (or keep in `server.ts` for simplicity). Below is a single-file example with full explanation.
+
+### 7.1 Full code: `src/server.ts` (CRUD example)
+
+```ts
+import express, { Request, Response, NextFunction } from "express";
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Use middleware to parse JSON
+app.use(express.json());
+
+// --- In-memory data store (static for demo purposes) ---
+type Book = {
+  id: number;
+  title: string;
+  author?: string;
+};
+
+let books: Book[] = [
+  { id: 1, title: "Atomic Habits", author: "James Clear" },
+  { id: 2, title: "Deep Work", author: "Cal Newport" }
+];
+
+// Utility to find next ID (simple)
+const getNextId = (): number => (books.length ? Math.max(...books.map(b => b.id)) + 1 : 1);
+
+// --- Routes ---
+
+// GET /books - list all books
+app.get("/books", (req: Request, res: Response) => {
+  res.status(200).json(books);
+});
+
+// GET /books/:id - get a single book
+app.get("/books/:id", (req: Request, res: Response) => {
+  const id = Number(req.params.id);
+  const book = books.find(b => b.id === id);
+  if (!book) {
+    return res.status(404).json({ message: "Book not found" });
+  }
+  res.json(book);
+});
+
+// POST /books - create a new book
+app.post("/books", (req: Request, res: Response) => {
+  const { title, author } = req.body as Partial<Book>;
+  if (!title || typeof title !== "string") {
+    return res.status(400).json({ message: "Title is required and must be a string" });
+  }
+  const newBook: Book = { id: getNextId(), title, author };
+  books.push(newBook);
+  res.status(201).json(newBook);
+});
+
+// PUT /books/:id - full replace (must provide title)
+app.put("/books/:id", (req: Request, res: Response) => {
+  const id = Number(req.params.id);
+  const { title, author } = req.body as Partial<Book>;
+  if (!title || typeof title !== "string") {
+    return res.status(400).json({ message: "Title is required and must be a string" });
+  }
+
+  const idx = books.findIndex(b => b.id === id);
+  if (idx === -1) return res.status(404).json({ message: "Book not found" });
+
+  const updated: Book = { id, title, author };
+  books[idx] = updated;
+  res.json(updated);
+});
+
+// PATCH /books/:id - partial update
+app.patch("/books/:id", (req: Request, res: Response) => {
+  const id = Number(req.params.id);
+  const { title, author } = req.body as Partial<Book>;
+  const book = books.find(b => b.id === id);
+  if (!book) return res.status(404).json({ message: "Book not found" });
+
+  if (title !== undefined) {
+    if (typeof title !== "string") return res.status(400).json({ message: "Title must be a string" });
+    book.title = title;
+  }
+  if (author !== undefined) book.author = author;
+
+  res.json(book);
+});
+
+// DELETE /books/:id - delete a book
+app.delete("/books/:id", (req: Request, res: Response) => {
+  const id = Number(req.params.id);
+  const idx = books.findIndex(b => b.id === id);
+  if (idx === -1) return res.status(404).json({ message: "Book not found" });
+
+  const deleted = books.splice(idx, 1)[0];
+  res.json({ message: "Book deleted", deleted });
+});
+
+// Simple global error handler (this example doesn't throw errors, but good practice)
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.error("Unhandled error:", err);
+  res.status(500).json({ message: "Internal Server Error" });
+});
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`✅ Server running at http://localhost:${PORT}`);
+});
+```
+
+---
+
+### 7.2 Explanation of CRUD routes
+
+**GET /books**
+
+* Returns the whole array of books.
+* `res.status(200).json(books)` — 200 OK with JSON payload.
+
+**GET /books/:id**
+
+* URL param `:id` available at `req.params.id`. Convert to number and find the book. If not found, return 404.
+
+**POST /books**
+
+* Reads JSON body via `req.body` (requires `express.json()` middleware).
+* Validates required `title`. If invalid, returns 400. On success, creates new book, pushes to array, and returns `201 Created` with the created object.
+
+**PUT /books/:id**
+
+* Full replacement: requires `title`. Replace the entire resource with the supplied object. Idempotent — repeated calls produce same result.
+
+**PATCH /books/:id**
+
+* Partial update: only update fields present in body. Validate types when needed.
+
+**DELETE /books/:id**
+
+* Remove item from array and return confirmation.
+
+**Global error handler**
+
+* Express calls handlers with `(err, req, res, next)` when `next(err)` is used or exceptions happen in async code (with proper handling). Useful for production to avoid leaking stack traces.
+
+---
+
+# 8) Testing with Postman and curl
+
+### 8.1 Start your server (dev)
+
+```bash
+npm run dev
+# or
+npx tsx src/server.ts
+```
+
+### 8.2 GET all books (curl & Postman)
+
+**curl:**
+
+```bash
+curl -i http://localhost:3000/books
+```
+
+**Response:**
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+
+[{"id":1,"title":"Atomic Habits","author":"James Clear"}, ...]
+```
+
+**Postman:**
+
+* Method: GET
+* URL: `http://localhost:3000/books`
+* Send → view JSON array in Body tab.
+
+---
+
+### 8.3 GET single book
+
+**curl:**
+
+```bash
+curl -i http://localhost:3000/books/1
+```
+
+**Postman:**
+
+* GET `http://localhost:3000/books/1`
+
+---
+
+### 8.4 POST create book
+
+**curl:**
+
+```bash
+curl -i -X POST http://localhost:3000/books \
+  -H "Content-Type: application/json" \
+  -d '{"title":"The Alchemist","author":"Paulo Coelho"}'
+```
+
+**Postman:**
+
+* Method: POST
+* URL: `http://localhost:3000/books`
+* Body → raw → JSON → `{"title":"The Alchemist","author":"Paulo Coelho"}`
+
+**Response:** 201 Created with created object.
+
+---
+
+### 8.5 PUT replace book
+
+**curl:**
+
+```bash
+curl -i -X PUT http://localhost:3000/books/1 \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Atomic Habits (2nd Edition)","author":"James Clear"}'
+```
+
+**Note:** PUT expects full resource (title required). If you omit fields, they’ll be replaced/overwritten.
+
+---
+
+### 8.6 PATCH partial update
+
+**curl:**
+
+```bash
+curl -i -X PATCH http://localhost:3000/books/1 \
+  -H "Content-Type: application/json" \
+  -d '{"author":"J. Clear"}'
+```
+
+**Response:** 200 with updated object.
+
+---
+
+### 8.7 DELETE
+
+**curl:**
+
+```bash
+curl -i -X DELETE http://localhost:3000/books/1
+```
+
+**Response:** 200 with message and deleted resource.
+
+---
