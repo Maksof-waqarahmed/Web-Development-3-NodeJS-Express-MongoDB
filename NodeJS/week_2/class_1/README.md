@@ -819,10 +819,18 @@ app.METHOD(PATH, HANDLER)
 app.get("/users", (req: Request, res: Response) => {
   res.json([{ id: 1, name: "Rana" }]);
 });
+```
 
-app.post("/users", (req: Request, res: Response) => {
-  const newUser = req.body;
-  res.status(201).json({ message: "User created", user: newUser });
+---
+
+### `req.body`
+
+Use `req.body` to access JSON body sent in POST/PUT requests
+
+```ts
+app.post("/data", (req: Request, res: Response) => {
+  const data = req.body;
+  res.json({ message: "Data received", data });
 });
 ```
 
