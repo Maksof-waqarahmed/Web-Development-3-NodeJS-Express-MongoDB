@@ -556,7 +556,7 @@ After you answer these questions, npm will create a `package.json` file for you.
 | **git repository** | URL of your project’s GitHub repository.                           | `https://github.com/rana/node-ts-setup`       |
 | **keywords**       | Search tags for npm or GitHub (comma-separated).                   | `nodejs, typescript, backend`                 |
 | **author**         | Your name (optional).                                              | `Waqar Rana`                                  |
-| **license**        | License type (default: ISC).                                       | `MIT` or `ISC`                                |
+| **license**        | License type (default: ISC). MAJOR.MINOR.PATCH                                       | `MIT` or `ISC`                                |
 
 After confirming, npm shows:
 
