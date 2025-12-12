@@ -1,597 +1,864 @@
-# 🧩 Introduction to Database Design Principles
-
-When building any application — whether it’s a **web app**, **mobile app**, or **enterprise system** — **data** is one of the most important components.
-Storing data randomly leads to problems. To avoid this, we use **Database Design**, which ensures data is structured, meaningful, and efficient.
+# 📘 **DATABASE SYSTEMS**
 
 ---
 
-# 🧠 What is a Database?
+# 🧩 **1. What is Data?**
 
-A **database** is an organized collection of data that can be easily:
+**Data** is raw, unorganized facts that do not have any meaningful context.
 
-* Accessed
-* Stored
-* Updated
-* Managed
+### **Examples:**
 
-Think of it as a **digital filing cabinet**:
+* Numbers: 45, 89, 102
+* Words: “Ali”, “Laptop”, “Blue”
+* Dates: 12-02-2024
 
-* **Table** → A folder
-* **Row** → One item/record inside the folder
-* **Column** → A detail about the item
-
-### Example Table: `users`
-
-| id | name       | email                                     | age |
-| -- | ---------- | ----------------------------------------- | --- |
-| 1  | Waqar Rana | [waqar@gmail.com](mailto:waqar@gmail.com) | 22  |
-| 2  | Ali Khan   | [ali@gmail.com](mailto:ali@gmail.com)     | 25  |
-
-**Breakdown:**
-
-* Table name: `users`
-* Each row: one user
-* Each column: one piece of user information
+➡️ **Data = Raw facts**
 
 ---
 
-# ⚙️ Why Database Design is Important
+# 🧠 **2. What is Information?**
 
-Good database design makes your application:
+**Information** is processed, organized, and meaningful data.
 
-* ✅ Fast
-* ✅ Organized
-* ✅ Scalable
-* ✅ Secure
-* ✅ Easy to maintain
+### **Examples:**
 
-Bad database design leads to:
+* “Ali is 20 years old.”
+* “Laptop price is Rs. 85,000.”
+* “Today’s temperature is 32°C.”
 
-* ❌ Slow queries
-* ❌ Repeated data
-* ❌ Unnecessary complexity
-* ❌ Corrupted data relationships
+➡️ **Information = Processed Data**
 
 ---
 
-# 🧱 Basic Database Concepts
+# 🗄️ **3. What is a Database?**
 
-### 🧩 a. Table (Entity)
+A **database** is a structured and organized collection of related data stored electronically.
 
-A **table** represents a category of data.
+### **Examples:**
 
-**Examples:** `users`, `orders`, `products`
+* **School Database:** Students, Teachers, Classes
+* **E-commerce:** Products, Orders, Customers
+* **Hospital:** Patients, Doctors, Appointments
 
----
-
-### 🧩 b. Row (Record)
-
-A single entry in a table.
-
-**Example:** A single user in the `users` table.
+➡️ A database stores data in **tables (rows + columns)**.
 
 ---
 
-### 🧩 c. Column (Field)
+# 📝 **4. What is Metadata?**
 
-A specific piece of information about a record.
+**Metadata** means “data about data”.
 
-**Examples:** `email`, `price`, `created_at`
+It describes:
 
----
+* Data types
+* Table structure
+* Column names
+* Constraints
+* Size, format
 
-### 🧩 d. Primary Key (PK)
+### **Example Metadata for column “Age”:**
 
-A unique identifier for each row.
+* Type: INT
+* Range: 1–120
+* Required: YES
 
-**Examples:** `id` in `users`, `order_id` in `orders`
-Two rows can *never* have the same PK.
-
----
-
-### 🧩 e. Foreign Key (FK)
-
-A column that links one table to another.
-
-**Example:** `student_id` in `enrollments` connects to `students.id`
+➡️ Metadata helps DBMS understand **how** data should be stored.
 
 ---
 
-# 📘 Understanding Entity-Relationship Diagrams (ERD)
+# 🖥️ **5. What is DBMS?**
 
-Designing a database without an ERD is like constructing a building without a blueprint.
-An **ERD (Entity-Relationship Diagram)** helps you visualize:
+**DBMS (Database Management System)** is a software that creates, manages, and controls access to the database.
 
-* Tables (entities)
-* Attributes (columns)
-* Relationships (links)
+### Examples:
 
-This is one of the **most important** steps before writing any database or backend code.
+* MySQL
+* PostgreSQL
+* Oracle
+* MongoDB
+* SQL Server
 
----
-
-# 🧩 What is an ERD?
-
-An **Entity-Relationship Diagram** is a **visual representation** of:
-
-* ✔ Entities → future database **tables**
-* ✔ Attributes → future **columns**
-* ✔ Relationships → links using **foreign keys**
-
-Think of an ERD as the **map** of your database.
+<img src="./images/DB Environment.PNG" alt="DBMS">
 
 ---
 
-# 🎯 Why ERDs Are Important
+# 🔧 **6. Functionalities of DBMS**
 
-| Benefit                 | Explanation                             |
-| ----------------------- | --------------------------------------- |
-| 🧠 Better Understanding | You see the whole system at a glance    |
-| 🔗 Relationship Clarity | Avoids missing or broken FK links       |
-| ✨ Clean Architecture    | Makes normalization easier              |
-| 🚀 Faster Development   | Saves rewrite time later                |
-| 🔍 Debugging Aid        | Helps track issues and broken relations |
-| 🤝 Team Communication   | Everyone understands the same structure |
+## **1) Define**
 
-A well-made ERD prevents **95%** of backend confusion.
+Describes:
 
----
+* Structure (tables)
+* Data types
+* Keys
+* Constraints
 
-# 🧱 ERD Components (Very Important)
-
-### ✔ Entity
-
-A real-world object → becomes a **table**
-**Examples:** `User`, `Order`, `Product`, `Student`
-
-### ✔ Attributes
-
-Properties of an entity → become **columns**
-**Examples:** `name`, `email`, `price`, `created_at`
-
-### ✔ Primary Key (PK)
-
-A unique ID for each record
-**Examples:** `id`, `product_id`
-
-### ✔ Foreign Key (FK)
-
-A column that references another entity’s PK
-**Examples:** `user_id`, `post_id`
-
-### ✔ Relationship
-
-How two tables connect
-**Examples:** 1:1, 1:N, M:N
+Example:
+Creating table Student with **id INT PRIMARY KEY**.
 
 ---
 
-# 🔗 Designing Relationships
+## **2) Construct**
 
-There are **three main relationship types** in database design:
+Storing actual data on storage media.
 
----
-
-## 1️⃣ One-to-One (1:1)
-
-One row in Table A relates to **one** row in Table B.
-
-**Example: User → Profile**
-
-```
-User (1) ---- (1) Profile
-```
-
-| users   | profiles     |
-| ------- | ------------ |
-| id (PK) | id (PK)      |
-| name    | user_id (FK) |
-| email   | bio          |
-
-**Use cases:**
-✔ User ↔ Profile
-✔ Country ↔ Flag
-✔ Employee ↔ Contract
+Example:
+Inserting new record into Student table.
 
 ---
 
-## 2️⃣ One-to-Many (1:N)
+## **3) Manipulate**
 
-One record in Table A relates to **many** records in Table B.
+Operations performed on data:
 
-**Example: Teacher → Courses**
+* Retrieve (SELECT)
+* Update
+* Delete
+* Generate reports
 
-```
-Teacher (1) ----< (∞) Course
-```
-
-| teachers | courses         |
-| -------- | --------------- |
-| id (PK)  | id (PK)         |
-| name     | teacher_id (FK) |
-| email    | title           |
-
-This is the most common relationship in backend systems.
+Example:
+“Show all students with marks ≥ 80”
 
 ---
 
-## 3️⃣ Many-to-Many (M:N)
+## **4) Share**
 
-Many records connect to many records. You must use a **junction table**.
+Multiple users can access the database at the same time.
 
-**Example: Students ↔ Courses**
-
-```
-Students (∞) >----< (∞) Courses
-              \    /
-               \  /
-            Enrollments
-```
-
-| students | enrollments     | courses |
-| -------- | --------------- | ------- |
-| id (PK)  | student_id (FK) | id (PK) |
-| name     | course_id (FK)  | title   |
-| email    | enrolled_at     | price   |
-
-Other examples:
-✔ Roles ↔ Users
-✔ Products ↔ Categories
-✔ Books ↔ Authors
+Example:
+Teacher, Admin, and Accountant using same school database.
 
 ---
 
-# 🛠 How to Draw an ERD — Step-by-Step
+# 🥇 **7. Difference Between Database & DBMS**
 
-### Step 1️⃣ — Identify Entities
-
-List all the objects you want to store.
-**Example:** `User`, `Order`, `Product`, `Category`, `Post`, `Comment`
-
-### Step 2️⃣ — Add Attributes
-
-Every entity needs properties.
-**Example:**
-`User` → id, name, email, password
-`Product` → id, name, price, stock
-
-### Step 3️⃣ — Define Primary Keys
-
-Mostly `id` with auto-increment or UUID.
-
-### Step 4️⃣ — Add Foreign Keys
-
-This forms the relationships.
-**Example:** `orders.user_id` → references `users.id`
-
-### Step 5️⃣ — Normalize the Design
-
-Remove redundancy (1NF, 2NF, 3NF, BCNF rules)
-
-### Step 6️⃣ — Draw the Diagram
-
-Use tools like Draw.io, Lucidchart, Figma, or paper.
+| **Database**         | **DBMS**                         |
+| -------------------- | -------------------------------- |
+| Collection of tables | Software used to manage database |
+| Stores data only     | Performs operations (CRUD)       |
+| Cannot enforce rules | Enforces constraints             |
+| Cannot query         | Allows SQL queries               |
+| Passive              | Active                           |
 
 ---
 
-# 🏗 Example ERD (E-commerce System – Detailed)
+# 🧑‍💼 **8. Database Users**
 
-```
-+-----------+          +------------+          +-------------+         +--------------+
-|  Users    | 1 ---- ∞ |  Orders    | ∞ ---- ∞ |  Products   | ∞ ---- ∞| OrderItems   |
-+-----------+          +------------+          +-------------+         +--------------+
-| id (PK)   |          | id (PK)    |          | id (PK)     |         | id (PK)      |
-| name      |          | user_id(FK)|          | name        |         | order_id (FK)|
-| email     |          | total      |          | price       |         | product_id FK|
-| password  |          | date       |          | stock       |         | quantity     |
-+-----------+          +------------+          +-------------+         +--------------+
-```
-
-**Notes:**
-
-* A **user** can make many orders.
-* An **order** can include many products.
-* A **product** can appear in many orders.
-* `OrderItems` is the **junction table**.
+Database users are divided into **two categories**:
 
 ---
 
-# 🧰 Tools for Creating ERDs
+# **A) Actors on the Scene (Direct Users)**
 
-### ✔ Draw.io (Free)
+## **1) Database Administrator (DBA)**
 
-* Drag & drop rectangles
-* Add text for attributes
-* Connect with lines (1, ∞, M:N)
-* Save to Google Drive
+Responsible for:
 
-### ✔ Lucidchart (Professional)
-
-* Clean auto-aligned diagrams
-* Team collaboration
-* Large systems
-
-### ✔ Figma
-
-* UI-style ERDs
-* Collaborative
-* Free for small teams
-
-### ✔ Pen & Paper
-
-* Fast brainstorming
-* Ideal before coding
+* Installation & configuration
+* Security
+* Backup & recovery
+* Performance tuning
 
 ---
 
-# 🧾 Best Practices for ERDs
+## **2) Database Designers**
 
-* Use clear table names (`users`, `orders`)
-* Every table must have a **primary key**
-* Foreign keys must reference **valid PKs**
-* Avoid storing repeated values
-* Keep One-to-One relations minimal
-* Avoid unnecessary Many-to-Many
-* Group related tables together
-* Keep diagram clean (avoid crossing lines)
+They design:
 
----
+* Tables
+* Relationships
+* Keys
+* Constraints
 
-# ⚡ More Examples
-
-### Blogging System
-
-```
-Users 1 → ∞ Posts 1 → ∞ Comments
-```
-
-### School Database
-
-```
-Teachers 1 → ∞ Classes
-Students ∞ → ∞ Classes (via enrollment)
-```
-
-### Social Media Application
-
-```
-Users 1 → ∞ Posts
-Users 1 → ∞ Comments
-Users ∞ → ∞ Followers (via junction table)
-```
+They create **ERDs**.
 
 ---
 
-# 🧭 Steps to Design a Database (Extended)
+## **3) End Users**
 
-### Step 1 — Gather and Understand Requirements
+People who use applications.
 
-Ask:
+Types of end users:
 
-* What data do we need to store?
-* What objects/entities are involved?
-* How do these objects relate?
-
-**Example (Online Course Platform):** Students, Courses, Enrollments
-
-### Step 2 — Identify Entities (Tables)
-
-| Real-world object | Table       |
-| ----------------- | ----------- |
-| Student           | students    |
-| Course            | courses     |
-| Enrollment        | enrollments |
-
-### Step 3 — Define Attributes (Columns)
-
-#### 🧮 students table
-
-| Column | Type     | Description                |
-| ------ | -------- | -------------------------- |
-| id     | INT (PK) | Unique ID for each student |
-| name   | VARCHAR  | Student name               |
-| email  | VARCHAR  | Student email              |
-
-#### 📚 courses table
-
-| Column | Type     | Description      |
-| ------ | -------- | ---------------- |
-| id     | INT (PK) | Unique course ID |
-| title  | VARCHAR  | Course name      |
-| price  | DECIMAL  | Course price     |
-
-#### 🧾 enrollments table
-
-| Column      | Type     | Description            |
-| ----------- | -------- | ---------------------- |
-| id          | INT (PK) | Unique enrollment ID   |
-| student_id  | INT (FK) | References students.id |
-| course_id   | INT (FK) | References courses.id  |
-| enrolled_at | DATETIME | Enrollment timestamp   |
+* Casual Users (ad-hoc queries)
+* Naive Users (ATM, POS)
+* Sophisticated Users (Engineers)
+* Standalone Users (Excel, Access)
 
 ---
 
-# 🧹 Normalization and Denormalization
+## **4) System Analysts & Software Engineers**
 
-## 🎯 What is Normalization?
+They design:
 
-**Normalization** structures tables to:
+* Applications
+* APIs
+* Frontends
+* Backend logic
 
-* Eliminate duplication
-* Improve data integrity
-* Avoid anomalies
-* Optimize storage
-
----
-
-## 🔥 Why Normalization is Needed
-
-Without normalization:
-
-* ❌ Repeated data
-* ❌ Update anomalies
-* ❌ Inconsistent information
-* ❌ Slow performance
-
-Normalization ensures:
-
-* ✔ Clean
-* ✔ Scalable
-* ✔ Easy to maintain
-* ✔ Reliable
+They interact with DB using SQL.
 
 ---
 
-## 🚫 Example of a Bad Table
+# **B) Workers Behind the Scene**
 
-| order_id | customer_name | customer_address | product_name | product_price |
-| -------- | ------------- | ---------------- | ------------ | ------------- |
-| 1        | Ali Ahmed     | Karachi          | Laptop       | 1200          |
-| 2        | Ali Ahmed     | Karachi          | Mouse        | 20            |
-| 3        | Waqar Rana    | Lahore           | Keyboard     | 50            |
+## **1) System Designers & Implementers**
 
-**Problems:** Repeated customer & product data
+Build:
 
----
-
-# 🧹 Normalized Tables
-
-### customers
-
-| customer_id | name       | address |
-| ----------- | ---------- | ------- |
-| 1           | Ali Ahmed  | Karachi |
-| 2           | Waqar Rana | Lahore  |
-
-### orders
-
-| order_id | customer_id |
-| -------- | ----------- |
-| 1        | 1           |
-| 2        | 1           |
-| 3        | 2           |
-
-### products
-
-| product_id | name     | price |
-| ---------- | -------- | ----- |
-| 1          | Laptop   | 1200  |
-| 2          | Mouse    | 20    |
-| 3          | Keyboard | 50    |
-
-### order_items (Many-to-Many)
-
-| order_id | product_id |
-| -------- | ---------- |
-| 1        | 1          |
-| 2        | 2          |
-| 3        | 3          |
+* Storage engines
+* Query processors
+* Database architecture
 
 ---
 
-# 🔄 Denormalization
+## **2) Tool Developers**
 
-**Denormalization** intentionally adds redundancy to improve **read performance**.
+Develop:
 
-**Example:** Add `customer_name` inside `orders` for faster queries.
-
-| order_id | customer_id | customer_name | created_at |
-| -------- | ----------- | ------------- | ---------- |
-
-**Pros:** Faster queries
-**Cons:** Data duplication
+* Admin tools
+* Performance tools
+* Monitoring tools
+* Backup utilities
 
 ---
 
-# ⚔ Normalization vs Denormalization
+## **3) Operators & Maintenance Personnel**
 
-| Aspect            | Normalization         | Denormalization              |
-| ----------------- | --------------------- | ---------------------------- |
-| Goal              | Reduce redundancy     | Improve speed                |
-| Read Performance  | Slower (joins needed) | Faster                       |
-| Write Performance | Faster                | Slower                       |
-| Data Integrity    | High                  | Lower                        |
-| Best For          | OLTP (apps, banking)  | OLAP (dashboards, analytics) |
+Responsible for:
 
----
-
-# 🗝️ Example Schema
-
-```
-students
----------
-id (PK)
-name
-email
-
-courses
---------
-id (PK)
-title
-price
-
-enrollments
--------------
-id (PK)
-student_id (FK)
-course_id (FK)
-enrolled_at
-```
+* Running jobs
+* Server maintenance
+* Restarting services
+* Fixing hardware issues
 
 ---
 
-# ⚡ Common Mistakes
+# ⭐ **9. Advantages of DBMS**
 
-| Mistake              | Problem                      |
-| -------------------- | ---------------------------- |
-| No primary key       | Hard to identify unique rows |
-| Repeated data        | Data inconsistency           |
-| Missing foreign keys | Broken relationships         |
-| Poor naming          | Hard to understand           |
-| Not normalizing      | Redundant, messy data        |
-
----
-
-# 🧩 Best Practices
-
-* Always define **PKs and FKs**
-* Use **clear names** (student_id, order_id)
-* Avoid duplicate data
-* Choose correct **data types**
-* Normalize to **3NF**
-* Add **indexes** on frequently searched columns
-* Backup your database regularly
+* Reduces data redundancy
+* Ensures consistency
+* Improved data sharing
+* Security and access control
+* Backup and recovery
+* Enforces data integrity
+* Concurrent access
+* Better decision-making with reports
 
 ---
 
-# 🚀 Summary Table
+# ⚠️ **10. Disadvantages of DBMS**
 
-| Concept       | Description                 |
-| ------------- | --------------------------- |
-| Entity        | Real-world object (table)   |
-| Attribute     | Property of entity (column) |
-| Primary Key   | Unique ID                   |
-| Foreign Key   | Connects tables             |
-| Relationship  | How tables are linked       |
-| ER Diagram    | Visual representation       |
-| Normalization | Removing redundancy         |
+* Expensive software & hardware
+* Requires trained staff
+* Complex management
+* Failure affects entire system
+* More system resources needed
 
 ---
 
-# 💡 Final Thoughts
+# 🏛️ **11. History of Database Applications**
 
-Good database design is like strong architecture — it sets the foundation for a fast, secure, and scalable application.
+## **1) Early DB Applications (1960s–1980s)**
 
-A strong database:
+Based on 3 models:
 
-* Improves performance
-* Avoids future problems
-* Keeps your system flexible for new features
+1. **Hierarchical Model**
+
+<img src="./images/Hierarchical System.PNG" alt="Hierarchical Model">
+
+2. **Network Model**
+
+<img src="./images/Network System.PNG" alt="Network Model">
+
+3. **Inverted File System**
+
+### **Drawbacks**
+
+* Only programming interface
+* No SQL
+* Hard to reorganize
+* Rigid structure
+
+Famous & widely used models: **Hierarchical & Network**
 
 ---
 
-# 🛠 Hands-On Task
+## **2) Relational DBMS (RDBMS) – 1970s–1980s**
 
-**Design a Database for an E-commerce Website**
+Introduced by **E. F. Codd**
+Organizes data into **tables**.
+
+### **Advantages**
+
+* Easy to write new queries
+* High-level language (SQL)
+* Flexible
+* Easy to rearrange
+
+Early systems were slow → improved with:
+
+* Indexing
+* Optimizers
+* Better storage techniques
+
+---
+
+# 🧱 **12. ERD (Entity–Relationship Diagram)**
+
+ERD is used to model real-world systems using:
+
+* Entities
+* Attributes
+* Relationships
+
+---
+
+# 🔤 **13. ERD Terminologies**
+
+## **1) Entity**
+
+A real-world object with independent existence.
+
+Examples:
+
+* Student
+* Car
+* Product
+* Teacher
+
+---
+
+## **2) Attributes**
+
+Properties of entities.
+
+---
+
+### **a) Simple Attributes**
+
+Cannot be divided.
+
+* Age
+* Salary
+
+---
+
+### **b) Composite Attributes**
+
+Can be divided.
+
+* Name → (First, Middle, Last)
+* Address → (City, Country)
+
+---
+
+### **c) Single-Valued Attributes**
+
+Only one value.
+
+* Age
+* Roll number
+
+---
+
+### **d) Multivalued Attributes**
+
+More than one value.
+
+* Degrees {BS, MS}
+* Languages {English, Urdu, Arabic}
+
+Notation: **Double ellipse**
+
+---
+
+### **e) Derived Attributes**
+
+Derived from another attribute.
+
+* Age derived from DOB
+
+Notation: **Dashed ellipse**
+
+---
+
+### **f) Stored Attributes**
+
+The original value from which others are derived.
+
+* DOB
+
+---
+
+### **g) Complex Attributes**
+
+Composite + multivalued.
+
+Example:
+{Degree(Name, College, Passing Year)}
+
+---
+
+### **h) Null Values**
+
+Unknown or not applicable.
+
+---
+
+# 🗂️ **14. Entity Type & Entity Set**
+
+## **Entity Type**
+
+A definition of similar entities (like a class).
+
+Example:
+
+* Entity Type: Student
+* Attributes: id, name, age
+
+## **Entity Set**
+
+Collection of all entities at a time.
+
+Example:
+
+* Student Set = All students currently enrolled.
+
+---
+
+# 🔑 **15. Key Attribute**
+
+Uniquely identifies an entity.
+
+Examples:
+
+* Roll Number
+* CNIC
+* Email (unique)
+
+---
+
+# 🧩 **16. Weak Entity**
+
+Cannot exist without another entity.
+
+Example:
+Employee → Dependent (weak entity)
+
+Dependent has:
+
+* No unique attribute
+* Identified by **Employee + DependentName**
+
+Requires **Identifying Relationship**.
+
+---
+
+# 🏗️ **17. Database Design Process**
+
+1. Requirement Collection
+2. Analysis
+3. Conceptual Design (ERD)
+4. Logical Design (Tables)
+5. Physical Design
+6. Implementation
+7. Maintenance
+
+---
+
+# 🔗 **18. Relationship Degree**
+
+### **1) Unary**
+
+Relationship within same entity.
+
+Example:
+
+* Employee manages Employee
+
+<img src="./images/r1.PNG" alt="Unary Relationship">
+
+### **2) Binary**
+
+Between two entities.
+
+Example:
+
+* Student — Enrolls — Course
+
+<img src="./images/r2.PNG" alt="Binary Relationship">
+
+### **3) Ternary**
+
+Between three entities.
+
+Example:
+
+* Supplier — Supplies — Product — To Store
+
+<img src="./images/r3.PNG" alt="Ternary Relationship">
+
+---
+
+# 🔒 **19. Relationship Constraints**
+
+## **1) Cardinality Ratio**
+
+| Type  | Meaning      |
+| ----- | ------------ |
+| 1 : 1 | One to one   |
+| 1 : N | One to many  |
+| N : 1 | Many to one  |
+| M : N | Many to many |
+
+<img src="./images/r4.PNG" alt="Cardinality Ratio">
+
+---
+
+## **2) Participation Constraints**
+
+### **Total Participation**
+
+* Must participate
+  Notation: **Double line**
+
+### **Partial Participation**
+
+* May or may not participate
+  Notation: **Single line**
+
+<img src="./images/r5.PNG" alt="Participation Constraints">
+
+---
+
+# 🟥 **20. ER Diagram Symbols (Very Important)**
+
+| Symbol                | Meaning                         |
+| --------------------- | ------------------------------- |
+| ▢ Rectangle           | Entity                          |
+| ⃝ Ellipse             | Attribute                       |
+| ⃝⃝ Double Ellipse     | Multivalued Attribute           |
+| ⃝ (Dashed)            | Derived Attribute               |
+| ◆ Diamond             | Relationship                    |
+| ◆◆ Double Diamond     | Identifying Relationship        |
+| ▢▢ Double Rectangle   | Weak Entity                     |
+| Line with double bars | Total participation             |
+| Line with arrow →     | One side                        |
+| No arrow              | Many                            |
+| Triangle (ISA)        | Generalization / Specialization |
+
+<img src="./images/symbol 1.PNG" alt="ER Diagram Symbols">
+<img src="./images/symbol 2.PNG" alt="ER Diagram Symbols">
+<img src="./images/symbol 3.PNG" alt="ER Diagram Symbols">
+
+---
+
+<img src="./images/ER company DB.PNG" alt="ER Diagram Company">
+
+---
+
+# 📘 **Normalization & Denormalization**
+
+---
+
+# 🧩 **What is Normalization?**
+
+**Normalization** is a database design technique used to:
+✔ remove data redundancy
+✔ avoid data anomalies
+✔ organize a database into well-structured tables
+✔ ensure data dependency is logical
+
+➡️ **Goal:** Make the database **efficient**, **consistent**, and **free from duplication**.
+
+---
+
+# ❓ Why do we need Normalization?
+
+Without normalization, we get problems like:
+
+### **1. Insertion Anomaly**
+
+You cannot insert data because some other data is missing.
+
+### **2. Deletion Anomaly**
+
+Deleting one record accidentally removes important related data.
+
+### **3. Update Anomaly**
+
+You need to update the same data in many places.
+
+Normalization solves all these issues.
+
+---
+
+# 🎯 **Normalization Example (Before Normalization)**
+
+Suppose we store student and course info in **one table**:
+
+| StudentID | StudentName | Course | Instructor |
+| --------- | ----------- | ------ | ---------- |
+| 1         | Ali         | DBMS   | Ahmed      |
+| 1         | Ali         | OOP    | Bilal      |
+| 2         | Sara        | DBMS   | Ahmed      |
+
+### ❌ Problems:
+
+* **Redundancy:** Instructor “Ahmed” appears multiple times
+* **Update anomaly:** If Ahmed changes name, update all rows
+* **Insertion anomaly:** New course cannot be added unless a student enrolls
+* **Deletion anomaly:** If student leaves, course info is lost
+
+➡️ **Normalization fixes all this.**
+
+---
+
+# 🏛️ **Types / Forms of Normalization (Normal Forms)**
+
+Main types:
+
+1. **1NF – First Normal Form**
+2. **2NF – Second Normal Form**
+3. **3NF – Third Normal Form**
+4. **BCNF – Boyce Codd Normal Form**
+5. *(Higher forms exist but rarely used)*
+
+Let’s explain each one clearly. 👇
+
+---
+
+# 🔰 **1NF – First Normal Form**
+
+A table is in 1NF if:
+
+✔ All values are **atomic** (no multivalues)
+✔ No repeating groups
+✔ Each field has a single value
+
+---
+
+### ❌ Before 1NF:
+
+| StudentID | Name | Courses   |
+| --------- | ---- | --------- |
+| 1         | Ali  | DBMS, OOP |
+| 2         | Sara | DBMS      |
+
+## ✔ After 1NF (Atomic values):
+
+| StudentID | Name | Course |
+| --------- | ---- | ------ |
+| 1         | Ali  | DBMS   |
+| 1         | Ali  | OOP    |
+| 2         | Sara | DBMS   |
+
+---
+
+# 🟦 **2NF – Second Normal Form**
+
+A table is in 2NF if:
+
+✔ It is already in **1NF**
+✔ No **partial dependency**
+✔ Non-key attributes depend on **whole primary key**
+
+(Applicable when composite key exists)
+
+---
+
+### ❌ Example (Before 2NF)
+
+Order table:
+
+| OrderID                             | ProductID | ProductName | Price |
+| ----------------------------------- | --------- | ----------- | ----- |
+| Primary Key = (OrderID + ProductID) |           |             |       |
+
+Here:
+
+* ProductName & Price depend **only on ProductID**, not on the full key.
+
+➡️ **Partial dependency → Bad**
+
+## ✔ After 2NF:
+
+### **Orders**
+
+| OrderID | ProductID |
+| ------- | --------- |
+
+### **Products**
+
+| ProductID | ProductName | Price |
+
+Now each attribute depends on the whole primary key.
+
+---
+
+# 🟩 **3NF – Third Normal Form**
+
+A table is in 3NF if:
+
+✔ Already in **2NF**
+✔ No **transitive dependency**
+(non-key attribute depends on another non-key attribute)
+
+---
+
+### ❌ Before 3NF:
+
+| StudentID | Name | City | ZIP |
+| --------- | ---- | ---- | --- |
+
+Here:
+City depends on ZIP → **transitive dependency**
+
+## ✔ After 3NF:
+
+### Students:
+
+| StudentID | Name | ZIP |
+
+### ZIP Codes:
+
+| ZIP | City |
+
+No transitive dependency.
+
+---
+
+# 🟥 **BCNF – Boyce–Codd Normal Form**
+
+Stronger version of 3NF.
+
+A table is in BCNF if:
+
+✔ For every functional dependency
+✔ Left side is a **super key**
+
+Used when:
+
+* A table has **multiple candidate keys**
+* Overlapping keys cause issues
+
+---
+
+# 🎉 **Summary Table of Normal Forms**
+
+| Form     | Removes                | Requirement                                   |
+| -------- | ---------------------- | --------------------------------------------- |
+| **1NF**  | Multivalued attributes | Atomic values                                 |
+| **2NF**  | Partial dependency     | No attribute depends on part of composite key |
+| **3NF**  | Transitive dependency  | Non-key attributes depend only on primary key |
+| **BCNF** | Complex anomalies      | Every determinant must be a key               |
+
+---
+
+# 🧱 **What is Denormalization?**
+
+**Denormalization** is the process of **combining normalized tables** to:
+
+✔ improve performance
+✔ reduce joins
+✔ speed up queries
+
+➡️ It **adds redundancy intentionally** for faster read operations.
+
+Used in:
+
+* Data warehouses
+* Search-heavy systems
+* OLAP systems
+
+---
+
+# ❓ Why Denormalization?
+
+Normalization → good structure, fewer anomalies
+BUT
+Too much normalization = too many tables = too many joins = slower performance
+
+Denormalization fixes performance issues.
+
+---
+
+# 📌 **Example of Denormalization**
+
+Suppose we normalized data like this:
+
+### **Customers**
+
+| CustomerID | CustomerName |
+
+### **Orders**
+
+| OrderID | CustomerID | Amount |
+
+To show customer + order data, we must join tables.
+
+If system is read-heavy (lots of SELECT queries), we **denormalize**:
+
+### **Denormalized Table**
+
+| OrderID | CustomerName | Amount |
+
+✔ Faster reads
+❌ Some redundancy
+
+---
+
+# 🔥 **Difference Between Normalization & Denormalization**
+
+| Normalization            | Denormalization          |
+| ------------------------ | ------------------------ |
+| Removes redundancy       | Adds redundancy          |
+| More tables              | Fewer tables             |
+| Reduces anomalies        | Improves performance     |
+| Best for OLTP            | Best for OLAP            |
+| Slow SELECT, fast UPDATE | Fast SELECT, slow UPDATE |
+
+---
+
+# 🧠 **When to Normalize?**
+
+* When data consistency is important
+* When system performs many inserts/updates
+* Banking systems
+* School systems
+* Inventory systems
+
+---
+
+# ⚡ When to Denormalize?
+
+* When READ performance is priority
+* Reporting systems
+* Search systems
+* Analytics
+* E-commerce product listing pages
+
+---
+
+# 🛍️ **21. E-Commerce Database Design**
+
+### **Entities:**
+
+* Customer
+* Product
+* Order
+* OrderItems
+* Category
+* Payment
+* Address
+
+### **Possible Relationships:**
+
+* Customer places Order
+* Order contains Products
+* Product belongs to Category
+* Order has Payment
+* Customer has Address
 
 ---
