@@ -841,24 +841,6 @@ If system is read-heavy (lots of SELECT queries), we **denormalize**:
 
 ---
 
-# 🛍️ **21. E-Commerce Database Design**
+# **Hands On:**
 
-### **Entities:**
-
-* Customer
-* Product
-* Order
-* OrderItems
-* Category
-* Payment
-* Address
-
-### **Possible Relationships:**
-
-* Customer places Order
-* Order contains Products
-* Product belongs to Category
-* Order has Payment
-* Customer has Address
-
----
+🛍️ Create a database for an **e-commerce website.**
