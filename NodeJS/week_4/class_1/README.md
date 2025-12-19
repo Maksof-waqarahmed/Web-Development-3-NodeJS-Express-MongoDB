@@ -145,29 +145,155 @@ app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 ```javascript
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  role: { type: String, default: "user" },
-  skills: [String],
-  experience: { type: Number, min: 0 },
-  createdAt: { type: Date, default: Date.now }
-});
+const userSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    role: { type: String, default: "user" },
+    skills: [String],
+    experience: { type: Number, min: 0 }
+  },
+  {
+    timestamps: true
+  }
+);
 
 export default mongoose.model("User", userSchema);
 ```
 
 **Schema Types in Mongoose:**
 
-| Type       | Description                   | Example                          |
-| ---------- | ----------------------------- | -------------------------------- |
-| `String`   | Textual data                  | `"John"`                         |
-| `Number`   | Numeric values                | `25`                             |
-| `Date`     | Date values                   | `new Date()`                     |
-| `Boolean`  | True/False                    | `true`                           |
-| `Array`    | List of values                | `["Node.js", "React"]`           |
-| `ObjectId` | Reference to another document | `mongoose.Schema.Types.ObjectId` |
-| `Mixed`    | Any type of data              | `{ arbitraryField: "value" }`    |
+| Type         | Use                    |
+| ------------ | ---------------------- |
+| `String`     | Name, email, title     |
+| `Number`     | Age, price, experience |
+| `Boolean`    | true / false           |
+| `Date`       | createdAt, updatedAt   |
+| `Buffer`     | Binary data (rare)     |
+| `ObjectId`   | Reference (relations)  |
+| `Mixed`      | Any type of data       |
+| `Array`      | List of values         |
+| `Map`        | Key-value pairs        |
+| `Decimal128` | High precision numbers |
+
+---
+
+### 🔹 Examples 👇
+
+```js
+name: String
+age: Number
+isActive: Boolean
+createdAt: Date
+userId: mongoose.Schema.Types.ObjectId
+skills: [String]
+meta: mongoose.Schema.Types.Mixed
+```
+
+---
+
+**Schema Attributes / Validators in Mongoose:**
+
+| Attribute                 | Purpose              |
+| ------------------------- | -------------------- |
+| `type`                    | Data type            |
+| `required`                | Mandatory field      |
+| `default`                 | Default value        |
+| `unique`                  | Unique value         |
+| `min` / `max`             | Number limits        |
+| `minlength` / `maxlength` | String length        |
+| `enum`                    | Allowed values       |
+| `match`                   | Regex validation     |
+| `trim`                    | Remove spaces        |
+| `lowercase`               | Convert to lowercase |
+| `uppercase`               | Convert to uppercase |
+| `select`                  | Hide/show field      |
+| `index`                   | Fast searching       |
+
+---
+
+### 🔸 Attribute Example
+
+```js
+email: {
+  type: String,
+  required: true,
+  unique: true,
+  lowercase: true,
+  trim: true,
+  match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+}
+```
+
+---
+
+---
+
+## 3️⃣ Advanced Schema Features 🚀
+
+### 🔹 Nested Object
+
+```js
+address: {
+  city: String,
+  country: String
+}
+```
+
+### 🔹 Array of Objects
+
+```js
+projects: [
+  {
+    title: String,
+    duration: Number
+  }
+]
+```
+
+### 🔹 References (Relations)
+
+```js
+roleId: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "Role"
+}
+```
+
+---
+
+## 4️⃣ Schema-level Options (second argument)
+
+```js
+new mongoose.Schema({}, {
+  timestamps: true,
+  collection: "users",
+  versionKey: false
+})
+```
+
+| Option       | Kaam                       |
+| ------------ | -------------------------- |
+| `timestamps` | createdAt, updatedAt       |
+| `collection` | Custom collection name     |
+| `versionKey` | __v disable                |
+| `strict`     | Extra fields allow / block |
+
+---
+
+### 🔗 Official Mongoose Documentation
+
+👉 **Schema Types**
+[https://mongoosejs.com/docs/schematypes.html](https://mongoosejs.com/docs/schematypes.html)
+
+👉 **Schema Options**
+[https://mongoosejs.com/docs/guide.html](https://mongoosejs.com/docs/guide.html)
+
+👉 **Validators**
+[https://mongoosejs.com/docs/validation.html](https://mongoosejs.com/docs/validation.html)
+
+👉 **Population / References**
+[https://mongoosejs.com/docs/populate.html](https://mongoosejs.com/docs/populate.html)
 
 ---
 
@@ -179,12 +305,13 @@ export default mongoose.model("User", userSchema);
 import { Document } from "mongoose";
 
 export interface IUser extends Document {
-  name: string;
-  email: string;
-  role?: string;
-  skills: string[];
-  experience: number;
-  createdAt?: Date;
+  name: string
+  email: string
+  role?: "user" | "admin"
+  skills?: string[]
+  experience?: number
+  createdAt?: Date
+  updatedAt?: Date
 }
 ```
 
@@ -194,16 +321,29 @@ export interface IUser extends Document {
 import mongoose from "mongoose";
 import { IUser } from "../types/User";
 
-const userSchema = new mongoose.Schema<IUser>({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  role: { type: String, default: "user" },
-  skills: [String],
-  experience: { type: Number, min: 0 },
-  createdAt: { type: Date, default: Date.now }
-});
+const userSchema = new Schema<IUser>(
+  {
+    name: { type: String, required: true, trim: true },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true
+    },
+    role: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user"
+    },
+    skills: [String],
+    experience: { type: Number, min: 0 }
+  },
+  {
+    timestamps: true
+  }
+)
 
-export default mongoose.model<IUser>("User", userSchema);
+export const User = mongoose.model<IUser>("User", userSchema)
 ```
 
 > ✅ This ensures **type safety** in TypeScript projects.
@@ -226,18 +366,6 @@ app.post("/users", async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
-```
-
-**POST Example:**
-
-```json
-POST /users
-{
-  "name": "Ali Khan",
-  "email": "ali@gmail.com",
-  "skills": ["Node.js", "MongoDB"],
-  "experience": 1
-}
 ```
 
 ---
