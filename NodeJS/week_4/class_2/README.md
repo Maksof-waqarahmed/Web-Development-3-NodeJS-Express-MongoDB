@@ -1,53 +1,57 @@
-# 📘 Advanced Querying and Filtering in MongoDB
+# 📘 Advanced Querying & Filtering in MongoDB (Complete Guide)
 
 ---
 
-## 🧠 Introduction
+## 🧠 1️⃣ Introduction
 
 MongoDB allows **powerful querying and filtering** of data stored in collections. Advanced querying includes:
 
-* Filtering documents based on multiple conditions
-* Sorting and limiting results
-* Projection (selecting specific fields)
-* Using comparison, logical, and array operators
-* Aggregation pipelines for complex data analysis
+* Data filter
+* Conditions
+* Sorting & pagination
+* Specific fields select
+* Array & nested object queries
+* Performance optimization (indexes)
+* Advanced data analysis (aggregation)
 
-With **TypeScript**, you can ensure **type safety** while building REST APIs with Express.js.
+With TypeScript:
+
+* **Type safety**
+* **Auto-completion**
+* **Runtime bugs kam**
 
 ---
 
-## ⚡ Setting Up
+## ⚡ 2️⃣ Project Setup
 
-### 1️⃣ Install Required Packages
+### 📦 Install Required Packages
 
 ```bash
 npm install express mongoose dotenv
-npm install --save-dev @types/express @types/mongoose typescript ts-node
+npm install --save-dev typescript ts-node @types/express @types/mongoose
 ```
 
-* `express` → Node.js framework
+**Packages explanation:**
+
+* `express` → API banane ke liye
 * `mongoose` → MongoDB ODM
-* `dotenv` → Load environment variables
-* TypeScript packages → Type-safe development
+* `dotenv` → env variables
+* TypeScript → strong typing
 
 ---
 
-### 2️⃣ Environment Variables (`.env`)
+### 🌱 Environment Variables (`.env`)
 
 ```env
 PORT=5000
-MONGO_URI=mongodb://localhost:27017/advancedDB
+MONGO_URI=<Your URI>
 ```
-
-> Ensures credentials are not hard-coded and can be different per environment.
 
 ---
 
-### 3️⃣ Connect Express with MongoDB
+### 🔌 MongoDB Connection (`server.ts`)
 
-**File:** `server.ts`
-
-```typescript
+```ts
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
@@ -59,19 +63,18 @@ app.use(express.json());
 
 mongoose.connect(process.env.MONGO_URI as string)
   .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.error("MongoDB connection error:", err));
+  .catch(err => console.error(err));
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(process.env.PORT, () =>
+  console.log("Server running")
+);
 ```
 
 ---
 
-## 🏗 Define Mongoose Schema and TypeScript Interface
+## 🏗 3️⃣ Schema & TypeScript Interface
 
-**File:** `models/Product.ts`
-
-```typescript
+```ts
 import mongoose, { Document } from "mongoose";
 
 export interface IProduct extends Document {
@@ -82,11 +85,19 @@ export interface IProduct extends Document {
   tags?: string[];
   createdAt?: Date;
 }
+```
 
+👉 Interface = **Type safety**
+
+---
+
+### 📐 Schema Definition
+
+```ts
 const productSchema = new mongoose.Schema<IProduct>({
   name: { type: String, required: true },
   category: { type: String, required: true },
-  price: { type: Number, required: true, min: 0 },
+  price: { type: Number, min: 0 },
   inStock: { type: Boolean, default: true },
   tags: [String],
   createdAt: { type: Date, default: Date.now }
@@ -95,22 +106,200 @@ const productSchema = new mongoose.Schema<IProduct>({
 export default mongoose.model<IProduct>("Product", productSchema);
 ```
 
-> ✅ Using `IProduct` ensures **type safety** for requests and responses.
+👉 Schema = **Database validation**
 
 ---
 
-## 🔍 Basic Querying
+# 🟢 4️⃣ BASIC READ QUERIES
 
-### 1️⃣ Find All Documents
+## 🔹 `find()`
 
-```typescript
-import Product from "./models/Product";
-
-const allProducts = await Product.find();
-console.log(allProducts);
+```js
+db.users.find()
 ```
 
-### 2️⃣ Find With Conditions
+👉 Collection's **all documents**
+
+```js
+db.users.find({ name: "Rana" })
+```
+
+👉 Matching documents only
+
+---
+
+## 🔹 `findOne()`
+
+```js
+db.users.findOne({ email: "rana@gmail.com" })
+```
+
+👉 First matching document
+
+---
+
+## 🔹 `findById()`
+
+```js
+User.findById("64fae...")
+```
+
+👉 `_id` indexed hota hai → **fastest query**
+
+---
+
+## 🔹 Projection (Fields Select)
+
+```js
+db.users.find(
+  { role: "user" },
+  { name: 1, email: 1, _id: 0 }
+)
+```
+
+👉 only required fields
+
+---
+
+## 🔹 `select()` (Mongoose)
+
+```js
+User.find().select("name email -_id")
+```
+
+---
+
+# 🟢 5️⃣ CREATE QUERIES
+
+## 🔹 `create()`
+
+```js
+User.create({
+  name: "Rana",
+  email: "rana@gmail.com"
+})
+```
+
+---
+
+## 🔹 `insertOne()`
+
+```js
+db.users.insertOne({
+  name: "Rana",
+  age: 22
+})
+```
+
+---
+
+## 🔹 `insertMany()`
+
+```js
+db.users.insertMany([
+  { name: "Ali", age: 20 },
+  { name: "Ahmed", age: 25 }
+])
+```
+
+---
+
+# 🟡 6️⃣ UPDATE QUERIES
+
+## 🔹 `updateOne()`
+
+```js
+User.updateOne(
+  { email: "rana@gmail.com" },
+  { $set: { experience: 3 } }
+)
+```
+
+👉 First matching document update
+
+---
+
+## 🔹 `updateMany()`
+
+```js
+User.updateMany(
+  { role: "user" },
+  { $set: { active: true } }
+)
+```
+
+---
+
+## 🔹 `findByIdAndUpdate()`
+
+```js
+User.findByIdAndUpdate(
+  id,
+  { experience: 5 },
+  { new: true, runValidators: true }
+)
+```
+
+👉 Updated document return
+
+---
+
+## 🔹 `findOneAndUpdate()`
+
+```js
+User.findOneAndUpdate(
+  { email: "rana@gmail.com" },
+  { role: "admin" },
+  { new: true }
+)
+```
+
+---
+
+# 🔴 7️⃣ DELETE QUERIES
+
+```js
+User.deleteOne({ email: "test@gmail.com" })
+User.deleteMany({ active: false })
+User.findByIdAndDelete(id)
+User.findOneAndDelete({ email: "test@gmail.com" })
+```
+
+---
+
+# 🔵 8️⃣ QUERY HELPERS
+
+## 🔹 `sort()`
+
+```js
+User.find().sort({ createdAt: -1 })
+```
+
+---
+
+## 🔹 `limit()` & `skip()`
+
+```js
+User.find().skip(10).limit(5)
+```
+
+👉 Pagination
+
+---
+
+## 🔹 `lean()`
+
+```js
+User.find().lean()
+```
+
+👉 Plain JS object → **fast**
+
+---
+
+# 🟣 9️⃣ CONDITIONAL FILTERING
+
+## 🔹 Comparison Operators
 
 ```typescript
 // Find products in category "Electronics"
@@ -133,7 +322,13 @@ const expensiveProducts = await Product.find({ price: { $gt: 50 } });
 
 ---
 
-### 3️⃣ Logical Operators
+## 🔹 Logical Operators
+
+```ts
+Product.find({
+  $and: [{ price: { $gt: 50 } }, { inStock: true }]
+})
+```
 
 | Operator | Description         | Example                                                    |
 | -------- | ------------------- | ---------------------------------------------------------- |
@@ -144,7 +339,7 @@ const expensiveProducts = await Product.find({ price: { $gt: 50 } });
 
 ---
 
-### 4️⃣ Array Queries
+# 🟤 1️⃣0️⃣ ARRAY QUERIES
 
 ```typescript
 // Find products that have tag "popular"
@@ -153,8 +348,6 @@ const popularProducts = await Product.find({ tags: "popular" });
 // Find products that have all specified tags
 const multiTagged = await Product.find({ tags: { $all: ["popular", "new"] } });
 ```
-
-**Array Operators:**
 
 | Operator | Description                    | Example                                          |
 | -------- | ------------------------------ | ------------------------------------------------ |
@@ -165,83 +358,41 @@ const multiTagged = await Product.find({ tags: { $all: ["popular", "new"] } });
 
 ---
 
-### 5️⃣ Sorting and Limiting
+# 🔍 1️⃣1️⃣ REGEX SEARCH
 
-```typescript
-// Sort by price ascending
-const sortedProducts = await Product.find().sort({ price: 1 });
+```js
+db.users.find({
+  name: { $regex: "^Ra", $options: "i" }
+})
+```
 
-// Limit to 5 results
-const topFive = await Product.find().limit(5);
+👉 Starts with "Ra", case-insensitive
 
-// Pagination: skip first 10, next 5
-const paginated = await Product.find().skip(10).limit(5);
+---
+
+# 🔢 1️⃣2️⃣ COUNT & EXISTS
+
+```js
+db.users.countDocuments({ role: "user" })
+db.users.find({ phone: { $exists: true } })
 ```
 
 ---
 
-### 6️⃣ Projection (Selecting Specific Fields)
+# ⚙️ 1️⃣3️⃣ PERFORMANCE & DEBUGGING
 
-```typescript
-// Only select name and price
-const projected = await Product.find({}, { name: 1, price: 1, _id: 0 });
+## 🔹 Explain Query
+
+```js
+db.users.find({ email: "rana@gmail.com" })
+  .explain("executionStats")
 ```
+
+| Result     | Meaning    |
+| ---------- | ---------- |
+| `IXSCAN`   | Index used |
+| `COLLSCAN` | Slow scan  |
 
 ---
 
 ## 🏗 Hands-On: Build a RESTful API with MongoDB and TypeScript
-
-**File:** `routes/productRoutes.ts`
-
-```typescript
-import { Router, Request, Response } from "express";
-import Product, { IProduct } from "../models/Product";
-
-const router = Router();
-
-// GET /products?category=Electronics&minPrice=50
-router.get("/", async (req: Request, res: Response) => {
-  try {
-    const { category, minPrice, maxPrice, inStock } = req.query;
-
-    const filter: any = {};
-    if (category) filter.category = category;
-    if (minPrice) filter.price = { ...filter.price, $gte: Number(minPrice) };
-    if (maxPrice) filter.price = { ...filter.price, $lte: Number(maxPrice) };
-    if (inStock !== undefined) filter.inStock = inStock === "true";
-
-    const products: IProduct[] = await Product.find(filter);
-    res.json(products);
-  } catch (err) {
-    res.status(500).json({ message: "Server Error", error: err });
-  }
-});
-
-export default router;
-```
-
-**Integrate into `server.ts`:**
-
-```typescript
-import productRoutes from "./routes/productRoutes";
-app.use("/products", productRoutes);
-```
-
-**Usage Examples:**
-
-* `GET /products` → Returns all products
-* `GET /products?category=Books` → Returns books
-* `GET /products?minPrice=50&maxPrice=100` → Products between 50–100
-* `GET /products?inStock=true` → Products in stock
-
----
-
-## ✅ Best Practices
-
-1. Always validate **query parameters** (TypeScript helps).
-2. Use **indexes** for frequently queried fields like `category` or `price`.
-3. Use **pagination** (`skip` + `limit`) for large datasets.
-4. Keep projections small to reduce network payload.
-5. Combine logical operators and comparison operators for advanced filtering.
-
----
