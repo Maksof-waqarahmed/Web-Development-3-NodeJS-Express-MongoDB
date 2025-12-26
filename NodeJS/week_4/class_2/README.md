@@ -159,6 +159,21 @@ db.users.find(
 
 👉 only required fields
 
+```js
+db.users.find(
+  {},
+  { name: 1, email: 1, _id: 0 }
+)
+```
+
+```js
+db.users.find({}).project({
+  name: 1,
+  email: 1,
+  _id: 0
+})
+```
+
 ---
 
 ## 🔹 `select()` (Mongoose)
