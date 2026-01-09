@@ -95,7 +95,7 @@ bcrypt.compare(password, hashedPassword)
 
 ---
 
-## 🍪 Sessions & Cookies (Stateful Authentication)
+## 🍪 Sessions (Stateful Authentication)
 
 ### 📌 What is a Session?
 
@@ -140,38 +140,6 @@ Server → finds session → allows access
 ❌ Not scalable
 ❌ Server memory heavy
 ❌ Hard with mobile apps
-
----
-
-## 🍪 Cookies Explained
-
-### What is a Cookie?
-
-A small piece of data stored in the **browser**.
-
-### Types:
-
-* Session cookie
-* Persistent cookie
-* HTTP-only
-* Secure cookie
-
-```ts
-res.cookie("sessionId", id, {
-  httpOnly: true,
-  secure: true
-});
-```
-
----
-
-### Cookie Security Flags
-
-| Flag     | Purpose          |
-| -------- | ---------------- |
-| httpOnly | JS cannot access |
-| secure   | HTTPS only       |
-| sameSite | Prevent CSRF     |
 
 ---
 
@@ -304,53 +272,6 @@ if (user.role !== "admin") {
 * moderator
 * teacher
 * student
-
----
-
-### Permission-based Authorization
-
-```json
-{
-  "permissions": ["READ_USERS", "DELETE_USERS"]
-}
-```
-
-More flexible than roles.
-
----
-
-## 🧠 Middleware Example (Express)
-
-```ts
-const authMiddleware = (req, res, next) => {
-  const token = req.headers.authorization?.split(" ")[1];
-
-  if (!token) return res.status(401).json({ message: "Unauthorized" });
-
-  const decoded = jwt.verify(token, SECRET);
-  req.user = decoded;
-  next();
-};
-```
-
----
-
-## 🏗️ Use Cases
-
-### Use Sessions When:
-
-✔ Traditional web apps
-✔ Server-rendered apps
-✔ Small scale apps
-
----
-
-### Use JWT When:
-
-✔ APIs
-✔ Mobile apps
-✔ Microservices
-✔ Next.js / React
 
 ---
 
@@ -581,100 +502,7 @@ app.post("/refresh", (req, res) => {
 
 ---
 
-## 🚪 Logout (Invalidate Refresh Token)
-
-✔ Remove from DB
-✔ Clear cookie
-
-```ts
-res.clearCookie("refreshToken");
-```
-
----
-
-## 📌 4. Authentication & Authorization in Express
-
-### 🔐 Authentication Middleware
-
-```ts
-const authenticate = (req, res, next) => {
-  if (!req.user) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
-  next();
-};
-```
-
----
-
-### 🔑 Authorization (Role-based)
-
-```ts
-const authorize = (roles: string[]) => {
-  return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
-      return res.status(403).json({ message: "Forbidden" });
-    }
-    next();
-  };
-};
-```
-
----
-
-### 🧠 Usage Example
-
-```ts
-app.get(
-  "/admin",
-  verifyToken,
-  authorize(["admin"]),
-  (req, res) => {
-    res.json({ message: "Welcome Admin" });
-  }
-);
-```
-
----
-
-## 📌 5. Error Handling in Express
-
-### ❌ Bad Error Handling (Don’t Do This)
-
-```ts
-try {
-  // logic
-} catch (err) {
-  res.send(err);
-}
-```
-
----
-
-## ✅ Centralized Error Middleware
-
-```ts
-const errorHandler = (err, req, res, next) => {
-  res.status(err.status || 500).json({
-    success: false,
-    message: err.message || "Server Error"
-  });
-};
-```
-
----
-
-### 🔁 Use with next()
-
-```ts
-if (!user) {
-  return next(new Error("User not found"));
-}
-```
-
----
-
-## 📌 6. Middleware Chaining Explained
+## 📌 4. Middleware Chaining Explained
 
 ### ❓ What is Middleware?
 
