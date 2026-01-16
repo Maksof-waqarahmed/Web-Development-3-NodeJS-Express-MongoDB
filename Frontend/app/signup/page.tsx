@@ -4,11 +4,10 @@ import type React from "react"
 
 import { useState } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useAuth } from "@/context/AuthContext"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { UserPlus } from "lucide-react"
+import { registerUser } from "../api/auth"
 
 export default function SignupPage() {
   const [email, setEmail] = useState("")
@@ -17,8 +16,6 @@ export default function SignupPage() {
   const [name, setName] = useState("")
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const { signup } = useAuth()
-  const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -41,8 +38,8 @@ export default function SignupPage() {
         return
       }
 
-      await signup(email, password, name)
-      router.push("/")
+      const res = await registerUser({ name, email, password })
+      console.log(res)
     } catch (err) {
       setError("Signup failed. Please try again.")
     } finally {
