@@ -3,6 +3,8 @@ import { LoginUserInput, loginUserSchema, RegisterUserInput, registerUserSchema 
 import User from "./user.model";
 import bcrypt from "bcrypt";
 import { generateToken } from "../helpers/jwt";
+import { sendEmail } from "../config/smtp";
+import { emailTemplates } from "../helpers/emailTempltes";
 
 export const registerUser = async (
     req: Request<{}, {}, RegisterUserInput>,
@@ -49,7 +51,7 @@ export const registerUser = async (
     } catch (err) {
         return res.status(500).json({
             success: false,
-            message: "Internal server error",
+            message: "Internal server error " + err,
         });
     }
 };
@@ -71,7 +73,6 @@ export const login = async (
         const { email, password } = parsed.data;
 
         const user = await User.findOne({ email }).select("+password");
-
 
         if (!user) {
             return res.status(401).json({
@@ -98,6 +99,8 @@ export const login = async (
 
         const accessToken = generateToken(payload);
 
+        await sendEmail({ email: user.email, subject: "Welcome to Ecommerce! Get started with your account", template: emailTemplates(user.email, user.name).Welcome });
+
         return res.status(200).json({
             success: true,
             message: "User logged in successfully",
@@ -108,7 +111,7 @@ export const login = async (
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: "Internal server error",
+            message: "Internal server error " + error,
         });
     }
 }

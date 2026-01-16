@@ -32,10 +32,6 @@ const userSchema = new mongoose.Schema<UserModel>(
             minlength: 6,
             select: false,
         },
-        number: {
-            type: String,
-            unique: true,
-        },
 
         role: {
             type: String,

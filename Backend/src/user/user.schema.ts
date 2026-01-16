@@ -11,7 +11,6 @@ export const registerUserSchema = z.object({
   password: z
     .string()
     .min(8, "Password must be exactly 8 characters")
-    .max(8, "Password must be exactly 8 characters")
     .regex(/[A-Z]/, "Password must contain at least 1 capital letter")
     .regex(/[0-9]/, "Password must contain at least 1 number")
     .regex(/[^A-Za-z0-9]/, "Password must contain at least 1 special character"),
