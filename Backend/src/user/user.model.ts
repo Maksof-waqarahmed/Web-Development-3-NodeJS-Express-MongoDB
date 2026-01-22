@@ -5,6 +5,7 @@ interface UserModel {
     email: string;
     password: string;
     number?: string;
+    token?: string | null;
     role: "user" | "admin";
     isActive: boolean;
     lastLogin?: Date;
@@ -37,6 +38,10 @@ const userSchema = new mongoose.Schema<UserModel>(
             type: String,
             enum: ["user", "admin"],
             default: "user",
+        },
+        token: {
+            type: String,
+            default: null,
         },
 
         isActive: {
