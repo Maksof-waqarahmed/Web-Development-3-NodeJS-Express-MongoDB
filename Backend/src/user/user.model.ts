@@ -58,4 +58,10 @@ const userSchema = new mongoose.Schema<UserModel>(
     }
 );
 
+userSchema.virtual("addresses", {
+    ref: "Address",
+    localField: "_id",
+    foreignField: "user",
+});
+
 export default mongoose.model<UserModel>("User", userSchema);
